@@ -13,12 +13,158 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
 
+// ────────────────────────────────────────────────
+// Medicine (Product)
+// ────────────────────────────────────────────────
 
+model Product {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String?
+
+  // Medicine-specific fields (OTC only)
+  manufacturer String?
+  dosageForm   String? // Tablet, Syrup, Capsule, Ointment, Drops, etc.
+  strength     String? // 500mg, 10mg/5ml, 1%, etc.
+  packSize     String? // 10 tablets, 100ml bottle, etc.
+
+  price             Float
+  discountPrice     Float? // promotional / sale price
+  stock             Int    @default(0)
+  lowStockThreshold Int    @default(10)
+
+  image  String? // main image URL
+  images String[] // gallery
+
+  sellerId String
+  seller   User   @relation(fields: [sellerId], references: [id], onDelete: Restrict)
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+// ────────────────────────────────────────────────
+// Cart (one cart per user)
+// ────────────────────────────────────────────────
+
+model Cart {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("carts")
+}
+
+model CartItem {
+  id String @id @default(uuid())
+
+  cartId String
+  cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  quantity Int @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@map("cart_items")
+}
+
+// ────────────────────────────────────────────────
+// Order & Order Address + OrderItem (multiple products per order)
+// ────────────────────────────────────────────────
+
+model Order {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shippingAddressId String
+  shippingAddress   OrderAddress @relation(fields: [shippingAddressId], references: [id], onDelete: Restrict)
+
+  totalAmount    Float
+  discountAmount Float? @default(0)
+  shippingFee    Float? @default(0)
+  finalAmount    Float
+
+  status OrderStatus @default(PENDING)
+  items  OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  quantity  Int
+  unitPrice Float // price at the time of order (snapshot)
+  subtotal  Float // quantity × unitPrice
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("order_items")
+}
+
+model OrderAddress {
+  id String @id @default(uuid())
+
+  fullName     String
+  phone        String
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  district     String? // Dhaka, Chattogram, Sylhet, ...
+  postalCode   String?
+  label        String? // Home, Office, etc.
+
+  // Relation to orders that used this address snapshot
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("order_addresses")
+}
 
 // better auth
-
 
 model User {
   id            String    @id
@@ -30,6 +176,13 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  role     Role
+  phone    String?
+  status   String?   @default("ACTIVE")
+  products Product[]
+  cart     Cart?
+  orders   Order[]
 
   @@unique([email])
   @@map("user")
