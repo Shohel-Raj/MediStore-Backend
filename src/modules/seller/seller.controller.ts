@@ -125,9 +125,42 @@ const deleteProductById = async (
   }
 };
 
+
+const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const productId = req.params?.productId as string;
+    // 1️ Get productId from params
+    if (!productId) return res.status(400).json({ error: "Product ID is required" });
+    
+
+    // 2️ Get logged-in user
+    if (!req.user) return res.status(401).json({ error: "Unauthorized: User not found" });
+
+    const sellerId = req.user.id;
+    const isAdmin = req.user.role === "admin";
+
+    // 3️ Call service to update
+    const updatedProduct = await SellerService.updateProduct(
+      productId,
+      req.body,   // Partial product data from request body
+      sellerId,
+      isAdmin
+    );
+
+    // 4️ Return updated product
+    res.status(200).json(updatedProduct);
+  } catch (err: any) {
+    console.error("Update product error:", err);
+    res.status(403).json({ error: err.message });
+  }
+};
+
+
 export const SellerController = {
   createProduct,
   getAllProducts,
   getProductById,
   deleteProductById,
+  updateProduct
 };

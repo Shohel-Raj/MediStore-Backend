@@ -2,16 +2,14 @@ import { Prisma, Product } from "../../generated/prisma/client";
 import { generateSlug } from "../../helpers/generateSlug";
 import { prisma } from "../../lib/prisma";
 
-
 const createProduct = async (
   data: Omit<Product, "id" | "createdAt" | "updatedAt" | "authorId">,
-
 ) => {
-  const slug = generateSlug(data.name)
+  const slug = generateSlug(data.name);
   const result = await prisma.product.create({
     data: {
       ...data,
-      slug
+      slug,
     },
   });
   return result;
@@ -70,8 +68,6 @@ const getAllProducts = async ({
       },
     });
   }
-
-
 
   // Dosage form filter
   if (dosageForm) {
@@ -154,7 +150,7 @@ const getAllProducts = async ({
 
 const getProductById = async (productId: string) => {
   const product = await prisma.product.findUnique({
-    where: {id: productId },
+    where: { id: productId },
   });
 
   if (!product) {
@@ -163,7 +159,10 @@ const getProductById = async (productId: string) => {
 
   return product;
 };
-const deleteProduct = async (productId: string, user: { id: string; role: string }) => {
+const deleteProduct = async (
+  productId: string,
+  user: { id: string; role: string },
+) => {
   const product = await prisma.product.findUnique({
     where: { id: productId },
   });
@@ -183,11 +182,41 @@ const deleteProduct = async (productId: string, user: { id: string; role: string
   return { message: "Product deleted successfully" };
 };
 
+const updateProduct = async (
+  productId: string,
+  data: Partial<Product>,
+  sellerId: string,
+  isAdmin: boolean,
+) => {
+  const productData = await prisma.product.findUniqueOrThrow({
+    where: { id: productId },
+    select: {
+      id: true,
+      sellerId: true,
+      name: true,
+    },
+  });
 
+  if (!isAdmin && productData.sellerId !== sellerId) {
+    throw new Error("You are not the owner/admin of this product!");
+  }
+
+  if (data.name && data.name !== productData.name) {
+    data.slug = generateSlug(data.name);
+  }
+
+  const result = await prisma.product.update({
+    where: { id: productData.id },
+    data,
+  });
+
+  return result;
+};
 
 export const SellerService = {
   createProduct,
   getAllProducts,
   getProductById,
-  deleteProduct
+  deleteProduct,
+  updateProduct,
 };

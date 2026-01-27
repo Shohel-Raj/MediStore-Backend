@@ -19,8 +19,12 @@ router.get("/medicines",  auth(UserRole.CUSTOMER, UserRole.ADMIN),
 // ========================== get single medicines =========================
 router.get("/medicines/:productId", SellerController.getProductById);
 
+// ======================= update product ======================================
+router.put("/medicines/:productId",auth(UserRole.CUSTOMER, UserRole.ADMIN), SellerController.updateProduct)
 
 // ===================== delete single medicines ======================
 router.delete("/medicines/:productId",auth(UserRole.CUSTOMER, UserRole.ADMIN), SellerController.deleteProductById)
+
+
 
 export const sellerRouter: Router = router;
