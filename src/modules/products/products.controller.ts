@@ -76,8 +76,24 @@ const getAllProducts = async (
   }
 };
 
+const getProductById = async (req: Request, res: Response) => {
+    try {
+        const { productId } = req.params;
+        if (!productId) {
+            throw new Error("Post Id is required!")
+        }
+        const result = await productService.getProductById(productId as string);
+        res.status(200).json(result)
+    } catch (e) {
+        res.status(400).json({
+            error: "Post creation failed",
+            details: e
+        })
+    }
+}
 
 export const ProductController = {
   createProduct,
-  getAllProducts
+  getAllProducts,
+  getProductById
 };

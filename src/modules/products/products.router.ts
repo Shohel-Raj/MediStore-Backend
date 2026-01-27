@@ -14,6 +14,11 @@ router.get(
   auth(UserRole.CUSTOMER, UserRole.ADMIN),
   ProductController.getAllProducts,
 );
+router.get(
+  "/:productId",
+  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  ProductController.getProductById,
+);
 
 
 
