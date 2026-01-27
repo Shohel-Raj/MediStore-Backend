@@ -9,5 +9,12 @@ router.post(
   auth(UserRole.CUSTOMER, UserRole.ADMIN),
   ProductController.createProduct,
 );
+router.get(
+  "/",
+  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  ProductController.getAllProducts,
+);
+
+
 
 export const productRouter: Router = router;
