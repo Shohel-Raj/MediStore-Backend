@@ -100,8 +100,34 @@ const getProductById = async (req: Request, res: Response) => {
   }
 };
 
+const deleteProductById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const productId = req.params?.productId as string;
+    // Check that user is logged in
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized: User not found" });
+    }
+    if (!productId) {
+      return res.status(400).json({ error: "Product ID is required" });
+    }
+    // Pass only the required fields to the service
+    const user = { id: req.user.id, role: req.user.role };
+    const result = await SellerService.deleteProduct(productId, user);
+
+    res.status(200).json(result);
+  } catch (err: any) {
+    console.error("Delete product error:", err);
+    res.status(403).json({ error: err.message });
+  }
+};
+
 export const SellerController = {
   createProduct,
   getAllProducts,
   getProductById,
+  deleteProductById,
 };

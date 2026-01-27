@@ -163,13 +163,31 @@ const getProductById = async (productId: string) => {
 
   return product;
 };
+const deleteProduct = async (productId: string, user: { id: string; role: string }) => {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+  });
 
+  if (!product) {
+    throw new Error("Product not found");
+  }
 
+  if (user.role !== "admin" && product.sellerId !== user.id) {
+    throw new Error("Unauthorized: You can only delete your own products");
+  }
+
+  await prisma.product.delete({
+    where: { id: productId },
+  });
+
+  return { message: "Product deleted successfully" };
+};
 
 
 
 export const SellerService = {
   createProduct,
   getAllProducts,
-  getProductById
+  getProductById,
+  deleteProduct
 };
