@@ -1,6 +1,35 @@
 import { NextFunction, Request, Response } from "express";
-import { productService } from "./products.service";
+import { SellerService } from "./seller.service";
 
+const createProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user = req.user;
+    const sellerId = req.user?.id;
+
+    if (!user) {
+      return res.status(400).json({
+        error: "Unauthorized!",
+      });
+    }
+    if (!req.body || Object.keys(req.body).length === 0) {
+      return res.status(400).json({
+        error: "Request body is empty. Please provide product data.",
+      });
+    }
+    const product = {
+      ...req.body,
+      sellerId,
+    };
+    const result = await SellerService.createProduct(product);
+    res.status(201).json(result);
+  } catch (e) {
+    next(e);
+  }
+};
 const getAllProducts = async (
   req: Request,
   res: Response,
@@ -11,6 +40,7 @@ const getAllProducts = async (
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
+    const sellerId = req.user?.id;
 
     // 🔃 Sorting
     const sortBy = (req.query.sortBy as string) || "createdAt";
@@ -26,6 +56,7 @@ const getAllProducts = async (
       skip,
       sortBy,
       sortOrder,
+      sellerId,
     };
 
     if (req.query.search) filters.search = String(req.query.search);
@@ -45,7 +76,7 @@ const getAllProducts = async (
     if (req.query.sellerId) filters.sellerId = String(req.query.sellerId);
 
     // 🔍 Call service
-    const result = await productService.getAllProducts(filters);
+    const result = await SellerService.getAllProducts(filters);
 
     res.status(200).json(result);
   } catch (e) {
@@ -59,7 +90,7 @@ const getProductById = async (req: Request, res: Response) => {
     if (!productId) {
       throw new Error("Post Id is required!");
     }
-    const result = await productService.getProductById(productId as string);
+    const result = await SellerService.getProductById(productId as string);
     res.status(200).json(result);
   } catch (e) {
     res.status(400).json({
@@ -69,20 +100,8 @@ const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-const getAllCategories = async (req: Request, res: Response) => {
-  try {
-    const categories = await productService.getAllCategories();
-    res.status(200).json({ data: categories });
-  } catch (err: any) {
-    console.error("Get categories error:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch categories", details: err.message });
-  }
-};
-
-export const ProductController = {
+export const SellerController = {
+  createProduct,
   getAllProducts,
   getProductById,
-  getAllCategories,
 };

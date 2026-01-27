@@ -1,24 +1,18 @@
 import express, { Router } from "express";
-import auth, { UserRole } from "../../middlewares/auth";
 import { ProductController } from "./products.controller";
 
 const router = express.Router();
 
-router.post(
-  "/",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
-  ProductController.createProduct,
-);
-router.get(
-  "/",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
-  ProductController.getAllProducts,
-);
-router.get(
-  "/:productId",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
-  ProductController.getProductById,
-);
+
+// ======================== get all medicines ================
+router.get("/", ProductController.getAllProducts);
+
+// ============== get all catagory ==============
+router.get("/categories", ProductController.getAllCategories);
+
+
+// ========================== get single medicines =========================
+router.get("/:productId", ProductController.getProductById);
 
 
 

@@ -3,6 +3,19 @@ import { generateSlug } from "../../helpers/generateSlug";
 import { prisma } from "../../lib/prisma";
 
 
+const createProduct = async (
+  data: Omit<Product, "id" | "createdAt" | "updatedAt" | "authorId">,
+
+) => {
+  const slug = generateSlug(data.name)
+  const result = await prisma.product.create({
+    data: {
+      ...data,
+      slug
+    },
+  });
+  return result;
+};
 
 // ---------------- GET ALL PRODUCTS ----------------
 const getAllProducts = async ({
@@ -57,6 +70,8 @@ const getAllProducts = async ({
       },
     });
   }
+
+
 
   // Dosage form filter
   if (dosageForm) {
@@ -137,8 +152,6 @@ const getAllProducts = async ({
   };
 };
 
-
-//  ================ get single product by id ============
 const getProductById = async (productId: string) => {
   const product = await prisma.product.findUnique({
     where: {id: productId },
@@ -151,30 +164,12 @@ const getProductById = async (productId: string) => {
   return product;
 };
 
-// ---------------- GET ALL CATEGORIES (DOSAGE FORMS) ----------------
-const getAllCategories = async () => {
-
-  // Fetch distinct dosage forms from products
-  const categories = await prisma.product.findMany({
-    distinct: ["dosageForm"], 
-    select: {
-      dosageForm: true,
-    },
-    where: {
-      dosageForm: { not: null },
-    },
-  });
-
-  // Map to simple array of strings
-  return categories.map((c) => c.dosageForm!);
-};
 
 
 
 
-
-export const productService = {
+export const SellerService = {
+  createProduct,
   getAllProducts,
-  getProductById,
-  getAllCategories
+  getProductById
 };

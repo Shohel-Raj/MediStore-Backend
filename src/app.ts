@@ -4,6 +4,7 @@ import cors from "cors"
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { productRouter } from "./modules/products/products.router";
+import { sellerRouter } from "./modules/seller/seller.router";
 
 const app = express();
 
@@ -18,7 +19,9 @@ app.use(express.json());
 
 
 
-app.use("/api/v1/product", productRouter)
+app.use("/api/v1/medicines", productRouter)
+
+app.use("/api/v1/seller", sellerRouter)
 
 
 app.get("/", async(req, res) => {
