@@ -3,6 +3,7 @@ import express from "express"
 import cors from "cors"
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
+import { productRouter } from "./modules/products/products.router";
 
 const app = express();
 
@@ -11,12 +12,21 @@ app.use(cors({
     credentials: true
 }))
 
+app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 
-app.all("/api/auth/*splat", toNodeHandler(auth));
 
-app.get("/", (req, res) => {
-    res.send("MediStore is cooking..........!");
+
+
+app.use("/api/v1/product", productRouter)
+
+
+app.get("/", async(req, res) => {
+     const session = await auth.api.getSession({
+                headers: req.headers as any
+            })
+            console.log(session)
+    res.send("MediStore is cooking..........");
 });
 
 
