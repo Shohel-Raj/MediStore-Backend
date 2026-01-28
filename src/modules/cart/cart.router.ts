@@ -15,4 +15,10 @@ router.get(
 router.post("/add",  auth(UserRole.CUSTOMER, UserRole.ADMIN),
  CartController.addToCart);
 
+ // Update item quantity
+router.patch("/item/:itemId",auth(UserRole.CUSTOMER, UserRole.ADMIN), CartController.updateCartItemQuantity);
+
+// Remove item
+router.delete("/item/:itemId",auth(UserRole.CUSTOMER, UserRole.ADMIN), CartController.removeCartItem);
+
 export const CartRoutes = router;
