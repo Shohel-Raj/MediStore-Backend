@@ -120,10 +120,35 @@ const removeCartItem = async (req: Request<{ itemId: string }>, res: Response) =
   }
 };
 
+const clearMyCart = async (req: Request, res: Response) => {
+  try {
+    const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const result = await cartService.clearMyCart(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Cart cleared successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
 
 export const CartController = {
   getMyCart,
   addToCart,
   removeCartItem,
-  updateCartItemQuantity
+  updateCartItemQuantity,
+  clearMyCart
 };

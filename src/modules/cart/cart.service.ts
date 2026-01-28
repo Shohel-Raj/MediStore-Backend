@@ -164,10 +164,34 @@ const removeCartItem = async ({
 
   return getMyCart(userId);
 };
+// ---------------- CLEAR CART ----------------
+const clearMyCart = async (userId: string) => {
+  const cart = await prisma.cart.findUnique({
+    where: { userId },
+  });
+
+  if (!cart) {
+    return {
+      id: null,
+      userId,
+      items: [],
+      totalItems: 0,
+    };
+  }
+
+  await prisma.cartItem.deleteMany({
+    where: { cartId: cart.id },
+  });
+
+  return getMyCart(userId);
+};
+
+
 
 export const cartService = {
   getMyCart,
   addToCart,
   updateCartItemQuantity,
-  removeCartItem
+  removeCartItem,
+  clearMyCart
 };

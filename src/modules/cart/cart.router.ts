@@ -12,13 +12,30 @@ router.get(
 );
 
 // Add item to cart
-router.post("/add",  auth(UserRole.CUSTOMER, UserRole.ADMIN),
- CartController.addToCart);
+router.post(
+  "/add",
+  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  CartController.addToCart,
+);
 
- // Update item quantity
-router.patch("/item/:itemId",auth(UserRole.CUSTOMER, UserRole.ADMIN), CartController.updateCartItemQuantity);
+// Update item quantity
+router.patch(
+  "/item/:itemId",
+  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  CartController.updateCartItemQuantity,
+);
 
 // Remove item
-router.delete("/item/:itemId",auth(UserRole.CUSTOMER, UserRole.ADMIN), CartController.removeCartItem);
+router.delete(
+  "/item/:itemId",
+  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  CartController.removeCartItem,
+);
+// Clear cart
+router.delete(
+  "/clear",
+  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  CartController.clearMyCart,
+);
 
 export const CartRoutes = router;
