@@ -133,6 +133,51 @@ const checkout = async ({
   });
 };
 
+// ---------------- GET MY ORDERS (USER) ----------------
+const getMyOrders = async (userId: string) => {
+  return prisma.order.findMany({
+    where: { userId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      shippingAddress: true,
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+};
+// ---------------- GET SINGLE ORDER (USER) ----------------
+const getMyOrderById = async ({
+  userId,
+  orderId,
+}: {
+  userId: string;
+  orderId: string;
+}) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      id: orderId,
+      userId,
+    },
+    include: {
+      shippingAddress: true,
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  if (!order) throw new Error("Order not found");
+  return order;
+};
+
+
 export const orderService = {
   checkout,
+  getMyOrders,
+  getMyOrderById
 };

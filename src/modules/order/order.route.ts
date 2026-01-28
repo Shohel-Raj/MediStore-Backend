@@ -8,8 +8,9 @@ router.post("/checkout",auth(UserRole.CUSTOMER, UserRole.ADMIN), orderController
 
 
 
+router.get("/me",auth(UserRole.CUSTOMER, UserRole.ADMIN), orderController.getMyOrders);
 
-
+router.get("/me/:orderId", orderController.getMyOrderById);
 
 
 
