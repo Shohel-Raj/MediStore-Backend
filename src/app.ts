@@ -6,6 +6,7 @@ import { auth } from "./lib/auth";
 import { productRouter } from "./modules/products/products.router";
 import { sellerRouter } from "./modules/seller/seller.router";
 import { CartRoutes } from "./modules/cart/cart.router";
+import { OrderRoutes } from "./modules/order/order.route";
 
 const app = express();
 
@@ -27,6 +28,8 @@ app.use("/api/v1/seller", sellerRouter)
 
 
 app.use("/api/v1/cart", CartRoutes)
+
+app.use("/api/v1/order", OrderRoutes)
 
 
 app.get("/", async(req, res) => {
