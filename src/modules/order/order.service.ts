@@ -1,3 +1,4 @@
+import { Prisma } from "../../generated/prisma/client";
 import { OrderStatus } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 type MyAddressInput = {
@@ -175,9 +176,64 @@ const getMyOrderById = async ({
   return order;
 };
 
+// ---------------- SELLER: GET MY ORDERS (ONLY HIS PRODUCTS) ----------------
+const getSellerOrders = async ({
+  sellerId,
+  page,
+  limit,
+  skip,
+  status,
+}: {
+  sellerId: string;
+  page: number;
+  limit: number;
+  skip: number;
+  status?: OrderStatus;
+}) => {
+  const whereCondition: Prisma.OrderWhereInput = {
+    ...(status && { status }),
+    items: {
+      some: {
+        product: {
+          sellerId: sellerId,
+        },
+      },
+    },
+  };
+  const orders = await prisma.order.findMany({
+    where: whereCondition,
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip,
+    include: {
+      user: true,
+      shippingAddress: true,
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.order.count({
+    where: whereCondition,
+  });
+
+  return {
+    data: orders,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
 
 export const orderService = {
   checkout,
   getMyOrders,
-  getMyOrderById
+  getMyOrderById,
+  getSellerOrders
 };

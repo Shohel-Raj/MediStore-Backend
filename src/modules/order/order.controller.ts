@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { orderService } from "./order.service";
-
+import { OrderStatus } from "../../generated/prisma/enums";
 
 const getSellerId = (req: Request) => {
   const user = (req as any).user;
@@ -12,8 +12,6 @@ const getUserId = (req: Request) => {
   if (!user?.id) return null;
   return user.id;
 };
-
-
 
 // ---------------- CHECKOUT ----------------
 const checkout = async (req: Request, res: Response) => {
@@ -74,7 +72,10 @@ const getMyOrders = async (req: Request, res: Response) => {
   }
 };
 // ---------------- USER: GET SINGLE ORDER ----------------
-const getMyOrderById = async (req: Request<{ orderId: string }>, res: Response) => {
+const getMyOrderById = async (
+  req: Request<{ orderId: string }>,
+  res: Response,
+) => {
   try {
     const userId = getUserId(req);
     if (!userId) {
@@ -83,12 +84,14 @@ const getMyOrderById = async (req: Request<{ orderId: string }>, res: Response) 
         message: "Unauthorized",
       });
     }
- 
+
     const orderId = req.params.orderId;
 
     if (!orderId || isNaN(Number(orderId))) {
-    return res.status(400).json({ success: false, message: 'orderId must be a valid number' });
-  }
+      return res
+        .status(400)
+        .json({ success: false, message: "orderId must be a valid number" });
+    }
 
     const result = await orderService.getMyOrderById({
       userId,
@@ -108,11 +111,47 @@ const getMyOrderById = async (req: Request<{ orderId: string }>, res: Response) 
   }
 };
 
+// ---------------- SELLER: GET MY ORDERS ----------------
+const getSellerOrders = async (req: Request, res: Response) => {
+  try {
+    const sellerId = getSellerId(req);
+    if (!sellerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const status = (req.query?.status as OrderStatus | undefined) ?? 'PENDING';
+
+    const result = await orderService.getSellerOrders({
+      sellerId,
+      page,
+      limit,
+      skip,
+      status,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Seller orders fetched successfully",
+      ...result,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
 
 export const orderController = {
   checkout,
   getMyOrders,
-  getMyOrderById
-
+  getMyOrderById,
+  getSellerOrders
 };
