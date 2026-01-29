@@ -126,7 +126,7 @@ const getSellerOrders = async (req: Request, res: Response) => {
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const status = (req.query?.status as OrderStatus | undefined) ?? 'PENDING';
+    const status = (req.query?.status as OrderStatus | undefined) ?? "PENDING";
 
     const result = await orderService.getSellerOrders({
       sellerId,
@@ -148,10 +148,79 @@ const getSellerOrders = async (req: Request, res: Response) => {
     });
   }
 };
+// ---------------- SELLER: GET SINGLE ORDER (ONLY HIS ITEMS) ----------------
+const getSellerOrderItems = async (
+  req: Request<{ orderId: string }>,
+  res: Response,
+) => {
+  try {
+    const sellerId = getSellerId(req);
+    if (!sellerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { orderId } = req?.params;
+
+    const result = await orderService.getSellerOrderItems({
+      sellerId,
+      orderId,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Order details fetched successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+const updateSellerOrderItemStatus = async (req: Request<{orderItemId : string}>, res: Response) => {
+  try {
+    const sellerId = (req as any).user?.id;
+
+    if (!sellerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { orderItemId } = req.params;
+    const { status } = req.body as { status: OrderStatus };
+
+    const result = await orderService.updateSellerOrderItemStatus({
+      sellerId,
+      orderItemId,
+      status,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Order item status updated successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
 
 export const orderController = {
   checkout,
   getMyOrders,
   getMyOrderById,
-  getSellerOrders
+  getSellerOrders,
+  getSellerOrderItems,
+  updateSellerOrderItemStatus
 };

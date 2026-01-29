@@ -231,9 +231,90 @@ const getSellerOrders = async ({
   };
 };
 
+// ---------------- SELLER: GET ORDER ITEMS ONLY (HIS PRODUCTS) ----------------
+const getSellerOrderItems = async ({
+  sellerId,
+  orderId,
+}: {
+  sellerId: string;
+  orderId: string;
+}) => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      shippingAddress: true,
+      user: true,
+      items: {
+        where: {
+          product: {
+            sellerId,
+          },
+        },
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  // if seller has no items in this order
+  if (!order.items || order.items.length === 0) {
+    throw new Error("You are not allowed to access this order");
+  }
+
+  return order;
+};
+
+// ---------------- SELLER UPDATE HIS ORDER ITEM STATUS ----------------
+const updateSellerOrderItemStatus = async ({
+  sellerId,
+  orderItemId,
+  status,
+}: {
+  sellerId: string;
+  orderItemId: string;
+  status: OrderStatus;
+}) => {
+  if (!orderItemId) throw new Error("orderItemId is required");
+  if (!status) throw new Error("status is required");
+
+  // Check order item exists and belongs to seller
+  const orderItem = await prisma.orderItem.findUnique({
+    where: { id: orderItemId },
+    include: {
+      product: true,
+      order: true,
+    },
+  });
+
+  if (!orderItem) throw new Error("Order item not found");
+
+  // verify seller ownership
+  if (orderItem.product.sellerId !== sellerId) {
+    throw new Error("You are not allowed to update this order item");
+  }
+
+  // update status
+  const updated = await prisma.orderItem.update({
+    where: { id: orderItemId },
+    data: { status },
+    include: {
+      product: true,
+      order: true,
+    },
+  });
+
+  return updated;
+};
+
+
 export const orderService = {
   checkout,
   getMyOrders,
   getMyOrderById,
-  getSellerOrders
+  getSellerOrders,
+  getSellerOrderItems,
+  updateSellerOrderItemStatus
 };

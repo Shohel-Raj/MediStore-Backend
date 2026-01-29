@@ -136,6 +136,7 @@ model OrderItem {
   quantity  Int
   unitPrice Float // price at the time of order (snapshot)
   subtotal  Float // quantity × unitPrice
+  status    OrderStatus @default(PENDING) //  NEW added for update seller own data
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
