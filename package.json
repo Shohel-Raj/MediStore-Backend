@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx --watch src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed:admin": "tsx src/scripts/seedAdmin.ts"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "nodemailer": "^7.0.13",
     "pg": "^8.17.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
@@ -26,6 +28,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.10",
+    "@types/nodemailer": "^7.0.9",
     "@types/pg": "^8.16.0",
     "prisma": "^7.3.0"
   }
