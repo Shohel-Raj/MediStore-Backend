@@ -30,4 +30,15 @@ router.get(
   adminController.getRecentOrders,
 );
 
+/**
+ * USERS MANAGEMENT
+ */
+router.get("/users",  auth(UserRole.ADMIN),  adminController.getAllUsers);
+router.get("/users/:id",  auth(UserRole.ADMIN),  adminController.getUserById);
+router.patch("/users/:id/role",  auth(UserRole.ADMIN),  adminController.updateUserRole);
+router.patch("/users/:id/block",   auth(UserRole.ADMIN), adminController.blockOrUnblockUser);
+router.delete("/users/:id",  auth(UserRole.ADMIN),  adminController.deleteUser);
+
+
+
 export const AdminRoutes = router;

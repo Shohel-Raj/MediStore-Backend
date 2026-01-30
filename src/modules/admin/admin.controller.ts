@@ -1,8 +1,17 @@
 import { Request, Response } from "express";
 import { adminService } from "./admin.service";
+import { UserRole } from "../../middlewares/auth";
+import { UserStatus } from "../../generated/prisma/enums";
+
+interface PaginationParams {
+  page: number;
+  limit: number;
+  skip: number;
+  search?: string;
+}
+
 
 const getUserId = (req: Request) => {
-
   const user = (req as any).user;
   if (!user?.id) return null;
   return user.id;
@@ -135,6 +144,158 @@ const getRecentOrders = async (req: Request, res: Response) => {
   }
 };
 
+// ---------------- USERS ----------------
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
+     const userId = getUserId(req);
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const search = req.query.search && String(req.query.search);
+    const params = {
+      page,
+      limit,
+      skip,
+    } as PaginationParams;
+
+    if (search) {
+      params.search = search; 
+    }
+    const result = await adminService.getAllUsers(params);
+
+    return res.status(200).json({
+      success: true,
+      message: "Users fetched successfully",
+      ...result,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+const getUserById = async (req: Request<{ userId: string }>, res: Response) => {
+  try {
+     const admin = getUserId(req);
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const { userId } = req.params;
+
+    const result = await adminService.getUserById(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(404).json({
+      success: false,
+      message: error.message || "User not found",
+    });
+  }
+};
+
+const updateUserRole = async (
+  req: Request<{ userId: string }>,
+  res: Response,
+) => {
+  try {
+
+     const admin = getUserId(req);
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const { userId } = req.params;
+    const { role } = req.body as { role: UserRole };
+
+    const result = await adminService.updateUserRole(userId, role);
+
+    return res.status(200).json({
+      success: true,
+      message: "User role updated successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+const blockOrUnblockUser = async (
+  req: Request<{ userId: string }>,
+  res: Response,
+) => {
+  try {
+     const admin = getUserId(req);
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const { userId } = req.params;
+    const { status } = req.body as { status: UserStatus };
+
+    const result = await adminService.blockOrUnblockUser(userId, status);
+
+    return res.status(200).json({
+      success: true,
+      message: `User ${status ? "blocked" : "unblocked"} successfully`,
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+const deleteUser = async (req: Request<{ userId: string }>, res: Response) => {
+  try {
+     const admin = getUserId(req);
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+    const { userId } = req.params;
+
+    const result = await adminService.deleteUser(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    return res.status(401).json({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
 export const adminController = {
   // stats
   getOverviewStats,
@@ -142,4 +303,11 @@ export const adminController = {
   getOrderStatusStats,
   getTopSellersStats,
   getRecentOrders,
+
+  // user management
+  getAllUsers,
+  getUserById,
+  updateUserRole,
+  blockOrUnblockUser,
+  deleteUser,
 };

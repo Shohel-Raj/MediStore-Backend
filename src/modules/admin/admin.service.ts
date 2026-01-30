@@ -1,5 +1,7 @@
-import { OrderStatus } from "../../generated/prisma/enums";
+import { Prisma } from "../../generated/prisma/client";
+import { OrderStatus, UserStatus } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import { UserRole } from "../../middlewares/auth";
 
 // ---------------- DASHBOARD OVERVIEW ----------------
 const getOverviewStats = async () => {
@@ -145,6 +147,96 @@ const getRecentOrders = async (limit: number) => {
   });
 };
 
+// ---------------- USERS: GET ALL USERS ----------------
+const getAllUsers = async ({
+  page,
+  limit,
+  skip,
+  search,
+}: {
+  page: number;
+  limit: number;
+  skip: number;
+  search?: string;
+}) => {
+  const andConditions: Prisma.UserWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  const users = await prisma.user.findMany({
+    take: limit,
+    skip,
+    where: {
+      AND: andConditions,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const total = await prisma.user.count({
+    where: {
+      AND: andConditions,
+    },
+  });
+
+  return {
+    data: users,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+// ---------------- USERS: GET SINGLE USER ----------------
+const getUserById = async (id: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  if (!user) throw new Error("User not found");
+
+  return user;
+};
+
+// ---------------- USERS: UPDATE ROLE ----------------
+const updateUserRole = async (id: string, role: UserRole) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) throw new Error("User not found");
+
+  return prisma.user.update({
+    where: { id },
+    data: { role },
+  });
+};
+
+// ---------------- USERS: BLOCK/UNBLOCK ----------------
+const blockOrUnblockUser = async (id: string, status: UserStatus) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) throw new Error("User not found");
+
+  return prisma.user.update({
+    where: { id },
+    data: {status},
+  });
+};
+
+// ---------------- USERS: DELETE ----------------
+const deleteUser = async (id: string) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) throw new Error("User not found");
+
+  return prisma.user.delete({ where: { id } });
+};
+
 export const adminService = {
   // stats
   getOverviewStats,
@@ -152,4 +244,10 @@ export const adminService = {
   getOrderStatusStats,
   getTopSellersStats,
   getRecentOrders,
+  // user
+  getAllUsers,
+  getUserById,
+  updateUserRole,
+  blockOrUnblockUser,
+  deleteUser
 };

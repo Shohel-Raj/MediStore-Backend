@@ -13,6 +13,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCK
+}
+
 enum Role {
   CUSTOMER
   SELLER
@@ -180,7 +186,7 @@ model User {
 
   role     Role
   phone    String?
-  status   String?   @default("ACTIVE")
+  status   UserStatus @default(ACTIVE)
   products Product[]
   cart     Cart?
   orders   Order[]
