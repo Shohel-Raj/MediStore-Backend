@@ -54,6 +54,7 @@ export type ProductMinAggregateOutputType = {
   stock: number | null
   lowStockThreshold: number | null
   image: string | null
+  status: $Enums.ProductStatus | null
   sellerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -73,6 +74,7 @@ export type ProductMaxAggregateOutputType = {
   stock: number | null
   lowStockThreshold: number | null
   image: string | null
+  status: $Enums.ProductStatus | null
   sellerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -93,6 +95,7 @@ export type ProductCountAggregateOutputType = {
   lowStockThreshold: number
   image: number
   images: number
+  status: number
   sellerId: number
   createdAt: number
   updatedAt: number
@@ -128,6 +131,7 @@ export type ProductMinAggregateInputType = {
   stock?: true
   lowStockThreshold?: true
   image?: true
+  status?: true
   sellerId?: true
   createdAt?: true
   updatedAt?: true
@@ -147,6 +151,7 @@ export type ProductMaxAggregateInputType = {
   stock?: true
   lowStockThreshold?: true
   image?: true
+  status?: true
   sellerId?: true
   createdAt?: true
   updatedAt?: true
@@ -167,6 +172,7 @@ export type ProductCountAggregateInputType = {
   lowStockThreshold?: true
   image?: true
   images?: true
+  status?: true
   sellerId?: true
   createdAt?: true
   updatedAt?: true
@@ -274,6 +280,7 @@ export type ProductGroupByOutputType = {
   lowStockThreshold: number
   image: string | null
   images: string[]
+  status: $Enums.ProductStatus
   sellerId: string
   createdAt: Date
   updatedAt: Date
@@ -317,6 +324,7 @@ export type ProductWhereInput = {
   lowStockThreshold?: Prisma.IntFilter<"Product"> | number
   image?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
   sellerId?: Prisma.StringFilter<"Product"> | string
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -340,6 +348,7 @@ export type ProductOrderByWithRelationInput = {
   lowStockThreshold?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -366,6 +375,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   lowStockThreshold?: Prisma.IntFilter<"Product"> | number
   image?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
   sellerId?: Prisma.StringFilter<"Product"> | string
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -389,6 +399,7 @@ export type ProductOrderByWithAggregationInput = {
   lowStockThreshold?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
   images?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -417,6 +428,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   lowStockThreshold?: Prisma.IntWithAggregatesFilter<"Product"> | number
   image?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  status?: Prisma.EnumProductStatusWithAggregatesFilter<"Product"> | $Enums.ProductStatus
   sellerId?: Prisma.StringWithAggregatesFilter<"Product"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -437,6 +449,7 @@ export type ProductCreateInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   seller: Prisma.UserCreateNestedOneWithoutProductsInput
@@ -459,6 +472,7 @@ export type ProductUncheckedCreateInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   sellerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -481,6 +495,7 @@ export type ProductUpdateInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   seller?: Prisma.UserUpdateOneRequiredWithoutProductsNestedInput
@@ -503,6 +518,7 @@ export type ProductUncheckedUpdateInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   sellerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -525,6 +541,7 @@ export type ProductCreateManyInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   sellerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -545,6 +562,7 @@ export type ProductUpdateManyMutationInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -564,6 +582,7 @@ export type ProductUncheckedUpdateManyInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   sellerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,6 +611,7 @@ export type ProductCountOrderByAggregateInput = {
   lowStockThreshold?: Prisma.SortOrder
   image?: Prisma.SortOrder
   images?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -618,6 +638,7 @@ export type ProductMaxOrderByAggregateInput = {
   stock?: Prisma.SortOrder
   lowStockThreshold?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -637,6 +658,7 @@ export type ProductMinOrderByAggregateInput = {
   stock?: Prisma.SortOrder
   lowStockThreshold?: Prisma.SortOrder
   image?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   sellerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -703,6 +725,10 @@ export type IntFieldUpdateOperationsInput = {
 export type ProductUpdateimagesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type EnumProductStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ProductStatus
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -794,6 +820,7 @@ export type ProductCreateWithoutCartItemsInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   seller: Prisma.UserCreateNestedOneWithoutProductsInput
@@ -815,6 +842,7 @@ export type ProductUncheckedCreateWithoutCartItemsInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   sellerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -852,6 +880,7 @@ export type ProductUpdateWithoutCartItemsInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   seller?: Prisma.UserUpdateOneRequiredWithoutProductsNestedInput
@@ -873,6 +902,7 @@ export type ProductUncheckedUpdateWithoutCartItemsInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   sellerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -894,6 +924,7 @@ export type ProductCreateWithoutOrderItemsInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   seller: Prisma.UserCreateNestedOneWithoutProductsInput
@@ -915,6 +946,7 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   sellerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -952,6 +984,7 @@ export type ProductUpdateWithoutOrderItemsInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   seller?: Prisma.UserUpdateOneRequiredWithoutProductsNestedInput
@@ -973,6 +1006,7 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   sellerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -994,6 +1028,7 @@ export type ProductCreateWithoutSellerInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   cartItems?: Prisma.CartItemCreateNestedManyWithoutProductInput
@@ -1015,6 +1050,7 @@ export type ProductUncheckedCreateWithoutSellerInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   createdAt?: Date | string
   updatedAt?: Date | string
   cartItems?: Prisma.CartItemUncheckedCreateNestedManyWithoutProductInput
@@ -1065,6 +1101,7 @@ export type ProductScalarWhereInput = {
   lowStockThreshold?: Prisma.IntFilter<"Product"> | number
   image?: Prisma.StringNullableFilter<"Product"> | string | null
   images?: Prisma.StringNullableListFilter<"Product">
+  status?: Prisma.EnumProductStatusFilter<"Product"> | $Enums.ProductStatus
   sellerId?: Prisma.StringFilter<"Product"> | string
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -1085,6 +1122,7 @@ export type ProductCreateManySellerInput = {
   lowStockThreshold?: number
   image?: string | null
   images?: Prisma.ProductCreateimagesInput | string[]
+  status?: $Enums.ProductStatus
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1104,6 +1142,7 @@ export type ProductUpdateWithoutSellerInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cartItems?: Prisma.CartItemUpdateManyWithoutProductNestedInput
@@ -1125,6 +1164,7 @@ export type ProductUncheckedUpdateWithoutSellerInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cartItems?: Prisma.CartItemUncheckedUpdateManyWithoutProductNestedInput
@@ -1146,6 +1186,7 @@ export type ProductUncheckedUpdateManyWithoutSellerInput = {
   lowStockThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   images?: Prisma.ProductUpdateimagesInput | string[]
+  status?: Prisma.EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1205,6 +1246,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   lowStockThreshold?: boolean
   image?: boolean
   images?: boolean
+  status?: boolean
   sellerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1229,6 +1271,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   lowStockThreshold?: boolean
   image?: boolean
   images?: boolean
+  status?: boolean
   sellerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1250,6 +1293,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   lowStockThreshold?: boolean
   image?: boolean
   images?: boolean
+  status?: boolean
   sellerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1271,12 +1315,13 @@ export type ProductSelectScalar = {
   lowStockThreshold?: boolean
   image?: boolean
   images?: boolean
+  status?: boolean
   sellerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "manufacturer" | "dosageForm" | "strength" | "packSize" | "price" | "discountPrice" | "stock" | "lowStockThreshold" | "image" | "images" | "sellerId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "description" | "manufacturer" | "dosageForm" | "strength" | "packSize" | "price" | "discountPrice" | "stock" | "lowStockThreshold" | "image" | "images" | "status" | "sellerId" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   seller?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   cartItems?: boolean | Prisma.Product$cartItemsArgs<ExtArgs>
@@ -1312,6 +1357,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     lowStockThreshold: number
     image: string | null
     images: string[]
+    status: $Enums.ProductStatus
     sellerId: string
     createdAt: Date
     updatedAt: Date
@@ -1755,6 +1801,7 @@ export interface ProductFieldRefs {
   readonly lowStockThreshold: Prisma.FieldRef<"Product", 'Int'>
   readonly image: Prisma.FieldRef<"Product", 'String'>
   readonly images: Prisma.FieldRef<"Product", 'String[]'>
+  readonly status: Prisma.FieldRef<"Product", 'ProductStatus'>
   readonly sellerId: Prisma.FieldRef<"Product", 'String'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Product", 'DateTime'>

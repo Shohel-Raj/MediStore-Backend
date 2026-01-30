@@ -1,5 +1,9 @@
 import { Prisma } from "../../generated/prisma/client";
-import { OrderStatus, UserStatus } from "../../generated/prisma/enums";
+import {
+  OrderStatus,
+  ProductStatus,
+  UserStatus,
+} from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middlewares/auth";
 
@@ -54,8 +58,8 @@ const getMonthlySalesStats = async (year: number) => {
   // Aggregate
   for (const order of orders) {
     const date = new Date(order.createdAt);
-    
-    // Skip if somehow invalid date 
+
+    // Skip if somehow invalid date
     if (isNaN(date.getTime())) continue;
 
     const monthIndex = date.getMonth(); // 0–11
@@ -225,7 +229,7 @@ const blockOrUnblockUser = async (id: string, status: UserStatus) => {
 
   return prisma.user.update({
     where: { id },
-    data: {status},
+    data: { status },
   });
 };
 
@@ -236,6 +240,163 @@ const deleteUser = async (id: string) => {
 
   return prisma.user.delete({ where: { id } });
 };
+
+// ---------------- PRODUCTS: GET ALL ----------------
+const getAllProducts = async ({
+  page,
+  limit,
+  skip,
+  search,
+  status,
+}: {
+  page: number;
+  limit: number;
+  skip: number;
+  search?: string;
+  status?: ProductStatus;
+}) => {
+  const andConditions: Prisma.ProductWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { manufacturer: { contains: search, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (status) {
+    andConditions.push({
+      status: { equals: status },
+    });
+  }
+
+  const products = await prisma.product.findMany({
+    take: limit,
+    skip,
+    where: {
+      AND: andConditions,
+    },
+    include: {
+      seller: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const total = await prisma.product.count({
+    where: {
+      AND: andConditions,
+    },
+  });
+
+  return {
+    data: products,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+// ---------------- PRODUCTS: UPDATE STATUS ----------------
+const updateProductStatus = async (id: string, status: ProductStatus) => {
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) throw new Error("Product not found");
+
+  return prisma.product.update({
+    where: { id },
+    data: { status },
+  });
+};
+
+// ---------------- PRODUCTS: DELETE ----------------
+const deleteProduct = async (id: string) => {
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) throw new Error("Product not found");
+
+  return prisma.product.delete({ where: { id } });
+};
+// ---------------- ORDERS: GET ALL ----------------
+const getAllOrders = async ({
+  page,
+  limit,
+  skip,
+  status,
+}: {
+  page: number;
+  limit: number;
+  skip: number;
+  status?: OrderStatus;
+}) => {
+  const whereCondition: Prisma.OrderWhereInput = {
+    ...(status && { status }),
+  };
+
+  const orders = await prisma.order.findMany({
+    take: limit,
+    skip,
+    where: whereCondition,
+    orderBy: { createdAt: "desc" },
+    include: {
+      user: true,
+      shippingAddress: true,
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+  });
+
+  const total = await prisma.order.count({
+    where: whereCondition,
+  });
+
+  return {
+    data: orders,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+// ---------------- ORDERS: GET BY ID ----------------
+const getOrderById = async (id: string) => {
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: {
+      user: true,
+      shippingAddress: true,
+      items: {
+        include: { product: true },
+      },
+    },
+  });
+
+  if (!order) throw new Error("Order not found");
+  return order;
+};
+
+// ---------------- ORDERS: UPDATE STATUS ----------------
+const updateOrderStatus = async (id: string, status: OrderStatus) => {
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) throw new Error("Order not found");
+
+  return prisma.order.update({
+    where: { id },
+    data: { status },
+  });
+};
+
+
+
+
 
 export const adminService = {
   // stats
@@ -249,5 +410,15 @@ export const adminService = {
   getUserById,
   updateUserRole,
   blockOrUnblockUser,
-  deleteUser
+  deleteUser,
+  // product
+
+  getAllProducts,
+  updateProductStatus,
+  deleteProduct,
+  // oder
+
+  getAllOrders,
+  getOrderById,
+  updateOrderStatus
 };

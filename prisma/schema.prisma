@@ -25,6 +25,12 @@ enum Role {
   ADMIN
 }
 
+enum ProductStatus {
+  ACTIVE
+  BLOCK
+}
+
+
 enum OrderStatus {
   PENDING
   CONFIRMED
@@ -56,6 +62,8 @@ model Product {
 
   image  String? // main image URL
   images String[] // gallery
+
+  status ProductStatus @default(ACTIVE)
 
   sellerId String
   seller   User   @relation(fields: [sellerId], references: [id], onDelete: Restrict)

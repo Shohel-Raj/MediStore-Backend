@@ -27,6 +27,14 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const ProductStatus = {
+  ACTIVE: 'ACTIVE',
+  BLOCK: 'BLOCK'
+} as const
+
+export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus]
+
+
 export const OrderStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',

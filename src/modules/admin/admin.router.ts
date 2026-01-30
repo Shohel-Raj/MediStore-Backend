@@ -39,6 +39,18 @@ router.patch("/users/:id/role",  auth(UserRole.ADMIN),  adminController.updateUs
 router.patch("/users/:id/block",   auth(UserRole.ADMIN), adminController.blockOrUnblockUser);
 router.delete("/users/:id",  auth(UserRole.ADMIN),  adminController.deleteUser);
 
+/**
+ * PRODUCTS MANAGEMENT
+ */
+router.get("/products",auth(UserRole.ADMIN), adminController.getAllProducts);
+router.patch("/products/:id/status",auth(UserRole.ADMIN), adminController.updateProductStatus);
+router.delete("/products/:id",auth(UserRole.ADMIN), adminController.deleteProduct);
 
+/**
+ * ORDERS MANAGEMENT
+ */
+router.get("/orders",auth(UserRole.ADMIN), adminController.getAllOrders);
+router.get("/orders/:id",auth(UserRole.ADMIN), adminController.getOrderById);
+router.patch("/orders/:id/status",auth(UserRole.ADMIN), adminController.updateOrderStatus);
 
 export const AdminRoutes = router;

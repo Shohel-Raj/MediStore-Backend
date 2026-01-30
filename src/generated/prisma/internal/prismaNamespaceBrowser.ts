@@ -94,6 +94,7 @@ export const ProductScalarFieldEnum = {
   lowStockThreshold: 'lowStockThreshold',
   image: 'image',
   images: 'images',
+  status: 'status',
   sellerId: 'sellerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
