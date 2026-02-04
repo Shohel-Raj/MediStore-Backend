@@ -20,7 +20,7 @@ enum UserStatus {
 }
 
 enum Role {
-  CUSTOMER
+  USER 
   SELLER
   ADMIN
 }

@@ -8,22 +8,22 @@ const router = express.Router();
 
 router.post(
   "/medicines",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.SELLER, UserRole.ADMIN),
   SellerController.createProduct,
 );
 
 // ======================== get all medicines ================
-router.get("/medicines",  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+router.get("/medicines",  auth(UserRole.SELLER, UserRole.ADMIN),
  SellerController.getAllProducts);
 
 // ========================== get single medicines =========================
 router.get("/medicines/:productId", SellerController.getProductById);
 
 // ======================= update product ======================================
-router.put("/medicines/:productId",auth(UserRole.CUSTOMER, UserRole.ADMIN), SellerController.updateProduct)
+router.put("/medicines/:productId",auth(UserRole.SELLER, UserRole.ADMIN), SellerController.updateProduct)
 
 // ===================== delete single medicines ======================
-router.delete("/medicines/:productId",auth(UserRole.CUSTOMER, UserRole.ADMIN), SellerController.deleteProductById)
+router.delete("/medicines/:productId",auth(UserRole.SELLER, UserRole.ADMIN), SellerController.deleteProductById)
 
 
 

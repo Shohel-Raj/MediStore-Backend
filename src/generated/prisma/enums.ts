@@ -19,7 +19,7 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
 export const Role = {
-  CUSTOMER: 'CUSTOMER',
+  USER: 'USER',
   SELLER: 'SELLER',
   ADMIN: 'ADMIN'
 } as const

@@ -11,7 +11,6 @@ const getAllProducts = async (
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-
     // 🔃 Sorting
     const sortBy = (req.query.sortBy as string) || "createdAt";
     const sortOrder =
@@ -27,7 +26,6 @@ const getAllProducts = async (
       sortBy,
       sortOrder,
     };
-
     if (req.query.search) filters.search = String(req.query.search);
     if (req.query.manufacturer)
       filters.manufacturer = String(req.query.manufacturer);
@@ -43,7 +41,6 @@ const getAllProducts = async (
       filters.hasDiscount = req.query.hasDiscount === "true";
 
     if (req.query.sellerId) filters.sellerId = String(req.query.sellerId);
-
     // 🔍 Call service
     const result = await productService.getAllProducts(filters);
 

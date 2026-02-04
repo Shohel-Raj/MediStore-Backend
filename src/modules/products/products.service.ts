@@ -141,9 +141,8 @@ const getAllProducts = async ({
 //  ================ get single product by id ============
 const getProductById = async (productId: string) => {
   const product = await prisma.product.findUnique({
-    where: {id: productId },
+    where: { id: productId },
   });
-
   if (!product) {
     throw new Error("Product not found");
   }

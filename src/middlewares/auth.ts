@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { auth as betterAuth } from "../lib/auth";
 
 export enum UserRole {
-  CUSTOMER = "CUSTOMER",
+  CUSTOMER = "USER",
   SELLER = "SELLER",
   ADMIN = "ADMIN",
 }
@@ -36,12 +36,12 @@ const auth = (...roles: UserRole[]) => {
         });
       }
 
-      if (!session.user.emailVerified) {
-        return res.status(403).json({
-          success: false,
-          message: "Email verification required. Please verfiy your email!",
-        });
-      }
+      // if (!session.user.emailVerified) {
+      //   return res.status(403).json({
+      //     success: false,
+      //     message: "Email verification required. Please verfiy your email!",
+      //   });
+      // }
 
       req.user = {
         id: session.user.id,

@@ -14,7 +14,7 @@ router.get(
 // Add item to cart
 router.post(
   "/add",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.CUSTOMER,UserRole.SELLER, UserRole.ADMIN),
   CartController.addToCart,
 );
 
