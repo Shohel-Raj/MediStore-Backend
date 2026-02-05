@@ -87,11 +87,7 @@ const getMyOrderById = async (
 
     const orderId = req.params.orderId;
 
-    if (!orderId || isNaN(Number(orderId))) {
-      return res
-        .status(400)
-        .json({ success: false, message: "orderId must be a valid number" });
-    }
+ 
 
     const result = await orderService.getMyOrderById({
       userId,

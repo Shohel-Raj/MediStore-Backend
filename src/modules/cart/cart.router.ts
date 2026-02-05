@@ -7,7 +7,7 @@ const router = express.Router();
 // Get my cart
 router.get(
   "/me",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.CUSTOMER,UserRole.SELLER, UserRole.ADMIN),
   CartController.getMyCart,
 );
 

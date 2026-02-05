@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post(
   "/checkout",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.CUSTOMER,UserRole.SELLER, UserRole.ADMIN),
   orderController.checkout,
 );
 
@@ -16,7 +16,7 @@ router.get(
   orderController.getMyOrders,
 );
 
-router.get("/me/:orderId", orderController.getMyOrderById);
+router.get("/me/:orderId",auth(UserRole.CUSTOMER, UserRole.ADMIN), orderController.getMyOrderById);
 
 // SELLER
 router.get(
