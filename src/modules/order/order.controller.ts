@@ -192,6 +192,7 @@ const updateSellerOrderItemStatus = async (req: Request<{orderItemId : string}>,
     const { orderItemId } = req.params;
     const { status } = req.body as { status: OrderStatus };
 
+
     const result = await orderService.updateSellerOrderItemStatus({
       sellerId,
       orderItemId,

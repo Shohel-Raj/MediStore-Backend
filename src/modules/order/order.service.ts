@@ -279,31 +279,26 @@ const updateSellerOrderItemStatus = async ({
 }) => {
   if (!orderItemId) throw new Error("orderItemId is required");
   if (!status) throw new Error("status is required");
+      console.log(" from service",orderItemId)
+
 
   // Check order item exists and belongs to seller
-  const orderItem = await prisma.orderItem.findUnique({
-    where: { id: orderItemId },
-    include: {
-      product: true,
-      order: true,
-    },
+  const orderItem = await prisma.order.findUnique({
+    where: { id: orderItemId }
+  
   });
 
   if (!orderItem) throw new Error("Order item not found");
 
   // verify seller ownership
-  if (orderItem.product.sellerId !== sellerId) {
-    throw new Error("You are not allowed to update this order item");
-  }
+  // if (orderItem.product.sellerId !== sellerId) {
+  //   throw new Error("You are not allowed to update this order item");
+  // }
 
   // update status
-  const updated = await prisma.orderItem.update({
+  const updated = await prisma.order.update({
     where: { id: orderItemId },
-    data: { status },
-    include: {
-      product: true,
-      order: true,
-    },
+    data: { status }
   });
 
   return updated;

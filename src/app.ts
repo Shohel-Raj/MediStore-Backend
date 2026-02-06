@@ -31,6 +31,7 @@ app.use("/api/v1/order", OrderRoutes);
 
 app.use("/api/v1/admin", AdminRoutes);
 
+
 app.get("/", async (req, res) => {
   const session = await auth.api.getSession({
     headers: req.headers as any,

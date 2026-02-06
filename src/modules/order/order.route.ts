@@ -21,19 +21,19 @@ router.get("/me/:orderId",auth(UserRole.CUSTOMER, UserRole.ADMIN), orderControll
 // SELLER
 router.get(
   "/seller/my-orders",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.SELLER, UserRole.ADMIN),
   orderController.getSellerOrders,
 );
 
 router.get(
   "/seller/my-orders/:orderId",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.SELLER, UserRole.ADMIN),
   orderController.getSellerOrderItems,
 );
 
 router.patch(
   "/seller/order-items/:orderItemId/status",
-  auth(UserRole.CUSTOMER, UserRole.ADMIN),
+  auth(UserRole.SELLER, UserRole.ADMIN),
   orderController.updateSellerOrderItemStatus,
 );
 
