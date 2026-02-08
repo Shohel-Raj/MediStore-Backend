@@ -401,7 +401,6 @@ const deleteProduct = async (req: Request<{ id: string }>, res: Response) => {
       });
     }
     const { id } = req.params;
-
     const result = await adminService.deleteProduct(id);
 
     return res.status(200).json({
