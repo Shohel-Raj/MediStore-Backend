@@ -239,7 +239,7 @@ const getUserById = async (req: Request<{ userId: string }>, res: Response) => {
 };
 
 const updateUserRole = async (
-  req: Request<{ userId: string }>,
+  req: Request<{ id: string }>,
   res: Response,
 ) => {
   try {
@@ -250,10 +250,10 @@ const updateUserRole = async (
         message: "Unauthorized",
       });
     }
-    const { userId } = req.params;
+    const { id } = req.params;
+    
     const { role } = req.body as { role: UserRole };
-
-    const result = await adminService.updateUserRole(userId, role);
+    const result = await adminService.updateUserRole(id, role);
 
     return res.status(200).json({
       success: true,
@@ -269,7 +269,7 @@ const updateUserRole = async (
 };
 
 const blockOrUnblockUser = async (
-  req: Request<{ userId: string }>,
+  req: Request<{ id: string }>,
   res: Response,
 ) => {
   try {
@@ -280,10 +280,9 @@ const blockOrUnblockUser = async (
         message: "Unauthorized",
       });
     }
-    const { userId } = req.params;
+    const { id } = req.params;
     const { status } = req.body as { status: UserStatus };
-
-    const result = await adminService.blockOrUnblockUser(userId, status);
+    const result = await adminService.blockOrUnblockUser(id, status);
 
     return res.status(200).json({
       success: true,
@@ -298,7 +297,7 @@ const blockOrUnblockUser = async (
   }
 };
 
-const deleteUser = async (req: Request<{ userId: string }>, res: Response) => {
+const deleteUser = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const admin = getUserId(req);
     if (!admin) {
@@ -307,9 +306,9 @@ const deleteUser = async (req: Request<{ userId: string }>, res: Response) => {
         message: "Unauthorized",
       });
     }
-    const { userId } = req.params;
+    const { id } = req.params;
 
-    const result = await adminService.deleteUser(userId);
+    const result = await adminService.deleteUser(id);
 
     return res.status(200).json({
       success: true,

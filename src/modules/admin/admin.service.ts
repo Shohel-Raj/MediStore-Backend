@@ -11,9 +11,9 @@ import { UserRole } from "../../middlewares/auth";
 const getOverviewStats = async () => {
   const totalUsers = await prisma.user.count();
   const totalCustomers = await prisma.user.count({
-    where: { role: "CUSTOMER" },
+    where: { role: UserRole.CUSTOMER },
   });
-  const totalSellers = await prisma.user.count({ where: { role: "SELLER" } });
+  const totalSellers = await prisma.user.count({ where: { role:UserRole.SELLER } });
 
   const totalProducts = await prisma.product.count();
   const totalOrders = await prisma.order.count();
