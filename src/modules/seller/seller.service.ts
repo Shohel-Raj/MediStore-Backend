@@ -213,10 +213,47 @@ const updateProduct = async (
   return result;
 };
 
+const getDashboardOverview = async (sellerId: string) => {
+  // Total products
+  const totalProducts = await prisma.product.count({
+    where: { sellerId },
+  });
+
+  // Products in stock
+  const inStockProducts = await prisma.product.count({
+    where: { sellerId, stock: { gt: 0 } },
+  });
+
+  // Out of stock
+  const outOfStockProducts = totalProducts - inStockProducts;
+
+  // Products with discounts
+  const discountedProducts = await prisma.product.count({
+    where: { sellerId, discountPrice: { not: null } },
+  });
+
+  // Optional: last 5 added products
+  const recentProducts = await prisma.product.findMany({
+    where: { sellerId },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    select: { id: true, name: true, price: true, stock: true, createdAt: true },
+  });
+
+  return {
+    totalProducts,
+    inStockProducts,
+    outOfStockProducts,
+    discountedProducts,
+    recentProducts,
+  };
+};
+
 export const SellerService = {
   createProduct,
   getAllProducts,
   getProductById,
   deleteProduct,
   updateProduct,
+  getDashboardOverview
 };

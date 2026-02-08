@@ -25,6 +25,10 @@ router.put("/medicines/:productId",auth(UserRole.SELLER, UserRole.ADMIN), Seller
 // ===================== delete single medicines ======================
 router.delete("/medicines/:productId",auth(UserRole.SELLER, UserRole.ADMIN), SellerController.deleteProductById)
 
-
+router.get(
+  "/dashboard/overview",
+  auth(UserRole.SELLER, UserRole.ADMIN),
+  SellerController.getDashboardOverview,
+);
 
 export const sellerRouter: Router = router;

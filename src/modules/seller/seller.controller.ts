@@ -155,6 +155,18 @@ const updateProduct = async (req: Request, res: Response, next: NextFunction) =>
     res.status(403).json({ error: err.message });
   }
 };
+const getDashboardOverview = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const sellerId = req.user?.id;
+    if (!sellerId) return res.status(401).json({ error: "Unauthorized" });
+
+    const data = await SellerService.getDashboardOverview(sellerId);
+
+    res.status(200).json(data);
+  } catch (err: any) {
+    next(err);
+  }
+};
 
 
 export const SellerController = {
@@ -162,5 +174,6 @@ export const SellerController = {
   getAllProducts,
   getProductById,
   deleteProductById,
-  updateProduct
+  updateProduct,
+  getDashboardOverview
 };

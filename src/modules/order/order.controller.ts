@@ -123,7 +123,6 @@ const getSellerOrders = async (req: Request, res: Response) => {
     const skip = (page - 1) * limit;
 
     const status = (req.query?.status as OrderStatus | undefined) ?? "PENDING";
-
     const result = await orderService.getSellerOrders({
       sellerId,
       page,
